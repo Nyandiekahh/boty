@@ -33,6 +33,11 @@ export const loginUrl = ({ language }: TLoginUrl) => {
     const marketing_queries = `${signup_device ? `&signup_device=${signup_device}` : ''}${
         date_first_contact ? `&date_first_contact=${date_first_contact}` : ''
     }`;
+    
+    // ⭐ ADD THIS: Get the current redirect URI
+    const redirect_uri = `${window.location.origin}/callback`;
+    const encoded_redirect_uri = encodeURIComponent(redirect_uri);
+    
     const getOAuthUrl = () => {
         const current_domain = getCurrentProductionDomain();
         let oauth_domain = deriv_urls.DERIV_HOST_NAME;
@@ -43,15 +48,21 @@ export const loginUrl = ({ language }: TLoginUrl) => {
             oauth_domain = domain_suffix;
         }
 
-        const url = `https://oauth.${oauth_domain}/oauth2/authorize?app_id=${getAppId()}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        // ⭐ UPDATED: Added redirect_uri parameter
+        const url = `https://oauth.${oauth_domain}/oauth2/authorize?app_id=${getAppId()}&l=${language}&redirect_uri=${encoded_redirect_uri}${marketing_queries}&brand=${website_name.toLowerCase()}`;
         return url;
     };
 
     if (server_url && /qa/.test(server_url)) {
-        return `https://${server_url}/oauth2/authorize?app_id=${getAppId()}&l=${language}${marketing_queries}&brand=${website_name.toLowerCase()}`;
+        // ⭐ UPDATED: Added redirect_uri parameter for QA servers
+        return `https://${server_url}/oauth2/authorize?app_id=${getAppId()}&l=${language}&redirect_uri=${encoded_redirect_uri}${marketing_queries}&brand=${website_name.toLowerCase()}`;
     }
 
-    if (getAppId() === domain_app_ids[window.location.hostname as keyof typeof domain_app_ids]) {
+    // ⭐ FIXED: Convert getAppId() to number for comparison, or compare as strings
+    const current_app_id = getAppId();
+    const domain_app_id = domain_app_ids[window.location.hostname as keyof typeof domain_app_ids];
+    
+    if (domain_app_id && current_app_id === String(domain_app_id)) {
         return getOAuthUrl();
     }
     return urlForCurrentDomain(getOAuthUrl());
