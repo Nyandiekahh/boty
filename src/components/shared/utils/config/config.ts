@@ -51,16 +51,26 @@ export const getDefaultAppIdAndUrl = () => {
     };
 };
 
-// ⭐ REPLACED FUNCTION 2
+// ⭐ REPLACED FUNCTION 2 - FIXED: Environment variable takes absolute priority
 export const getAppId = (): string => {
     // Priority: Environment variable > localStorage > default
     const env_app_id = process.env.APP_ID;
-    const stored_app_id = localStorage.getItem(LocalStorageConstants.configAppId);
     
-    if (env_app_id) return env_app_id;
-    if (stored_app_id) return stored_app_id;
+    // ⭐ CRITICAL FIX: If environment variable exists, ALWAYS use it (ignore localStorage)
+    if (env_app_id) {
+        console.log('🔍 Using App ID from environment:', env_app_id);
+        return env_app_id;
+    }
+    
+    // Only check localStorage if no environment variable
+    const stored_app_id = localStorage.getItem(LocalStorageConstants.configAppId);
+    if (stored_app_id) {
+        console.log('🔍 Using App ID from localStorage:', stored_app_id);
+        return stored_app_id;
+    }
     
     // Fallback to your App ID
+    console.log('🔍 Using fallback App ID: 107518');
     return '107518';
 };
 
@@ -86,6 +96,7 @@ export const checkAndSetEndpointFromUrl = () => {
             url_params.delete('app_id');
 
             if (/^(^(www\.)?qa[0-9]{1,4}\.deriv.dev|(.*)\.derivws\.com)$/.test(qa_server) && /^[0-9]+$/.test(app_id)) {
+                // ⭐ FIXED: Only store if it's actually a QA/test scenario
                 localStorage.setItem('config.app_id', app_id);
                 localStorage.setItem('config.server_url', qa_server.replace(/"/g, ''));
             }
