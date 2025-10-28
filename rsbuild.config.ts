@@ -26,6 +26,7 @@ export default defineConfig({
         },
         define: {
             'process.env': {
+                APP_ID: JSON.stringify(process.env.APP_ID || '107518'),
                 TRANSLATIONS_CDN_URL: JSON.stringify(process.env.TRANSLATIONS_CDN_URL),
                 R2_PROJECT_NAME: JSON.stringify(process.env.R2_PROJECT_NAME),
                 CROWDIN_BRANCH_NAME: JSON.stringify(process.env.CROWDIN_BRANCH_NAME),
@@ -43,6 +44,7 @@ export default defineConfig({
                 RUDDERSTACK_KEY: JSON.stringify(process.env.RUDDERSTACK_KEY),
                 GROWTHBOOK_CLIENT_KEY: JSON.stringify(process.env.GROWTHBOOK_CLIENT_KEY),
                 GROWTHBOOK_DECRYPTION_KEY: JSON.stringify(process.env.GROWTHBOOK_DECRYPTION_KEY),
+                IS_GROWTHBOOK_ENABLED: JSON.stringify(process.env.IS_GROWTHBOOK_ENABLED),
             },
         },
         alias: {

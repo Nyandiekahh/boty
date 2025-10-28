@@ -1,0 +1,60 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": null,
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "APP_ID": "107518",
+    "R2_PROJECT_NAME": "bg-dbot",
+    "TRANSLATIONS_CDN_URL": "https://translations.deriv.com",
+    "CROWDIN_BRANCH_NAME": "production",
+    "IS_GROWTHBOOK_ENABLED": "false",
+    "RUDDERSTACK_KEY": "",
+    "REMOTE_CONFIG_URL": "https://app-config-prod.firebaseio.com/remote_config/deriv-app.json",
+    "GROWTHBOOK_CLIENT_KEY": "",
+    "GROWTHBOOK_DECRYPTION_KEY": "",
+    "GD_API_KEY": "",
+    "GD_APP_ID": "",
+    "GD_CLIENT_ID": "",
+    "TRACKJS_TOKEN": "",
+    "DATADOG_APPLICATION_ID": "",
+    "DATADOG_CLIENT_TOKEN": "",
+    "DATADOG_SESSION_REPLAY_SAMPLE_RATE": "0",
+    "DATADOG_SESSION_SAMPLE_RATE": "0"
+  }
+}

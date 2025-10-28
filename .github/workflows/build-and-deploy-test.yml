@@ -78,17 +78,18 @@ jobs:
             - name: Build staging
               run: npm run build
               env:
-                  R2_PROJECT_NAME: ${{ vars.R2_PROJECT_NAME }}
-                  TRANSLATIONS_CDN_URL: ${{ vars.TRANSLATIONS_CDN_URL }}
+                  APP_ID: "107518"
+                  R2_PROJECT_NAME: bg-dbot
+                  TRANSLATIONS_CDN_URL: https://translations.deriv.com
                   CROWDIN_BRANCH_NAME: staging
-                  IS_GROWTHBOOK_ENABLED: ${{ vars.IS_GROWTHBOOK_ENABLED }}
-                  RUDDERSTACK_KEY: ${{ vars.RUDDERSTACK_KEY }}
-                  REMOTE_CONFIG_URL: ${{ vars.REMOTE_CONFIG_URL }}
-                  GROWTHBOOK_CLIENT_KEY: ${{ vars.GROWTHBOOK_CLIENT_KEY }}
-                  GROWTHBOOK_DECRYPTION_KEY: ${{ vars.GROWTHBOOK_DECRYPTION_KEY }}
-                  GD_API_KEY: ${{ secrets.GD_API_KEY }}
-                  GD_APP_ID: ${{ secrets.GD_APP_ID }}
-                  GD_CLIENT_ID: ${{ secrets.GD_CLIENT_ID }}
+                  IS_GROWTHBOOK_ENABLED: false
+                  RUDDERSTACK_KEY: ""
+                  REMOTE_CONFIG_URL: https://app-config-staging.firebaseio.com/remote_config/deriv-app.json
+                  GROWTHBOOK_CLIENT_KEY: ""
+                  GROWTHBOOK_DECRYPTION_KEY: ""
+                  GD_API_KEY: ""
+                  GD_APP_ID: ""
+                  GD_CLIENT_ID: ""
 
             - name: Run tests for Eslint
               run: npm run test:lint

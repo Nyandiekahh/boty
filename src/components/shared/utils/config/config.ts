@@ -1,5 +1,4 @@
 import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/utils';
-import { isStaging } from '../url/helpers';
 
 export const APP_IDS = {
     LOCALHOST: 36300,
@@ -44,65 +43,35 @@ export const isTestLink = () => {
 
 export const isLocal = () => /localhost(:\d+)?$/i.test(window.location.hostname);
 
-const getDefaultServerURL = () => {
-    if (isTestLink()) {
-        return 'ws.derivws.com';
-    }
-
-    let active_loginid_from_url;
-    const search = window.location.search;
-    if (search) {
-        const params = new URLSearchParams(document.location.search.substring(1));
-        active_loginid_from_url = params.get('acct1');
-    }
-
-    const loginid = window.localStorage.getItem('active_loginid') ?? active_loginid_from_url;
-    const is_real = loginid && !/^(VRT|VRW)/.test(loginid);
-
-    const server = is_real ? 'green' : 'blue';
-    const server_url = `${server}.derivws.com`;
-
-    return server_url;
-};
-
+// ⭐ REPLACED FUNCTION 1
 export const getDefaultAppIdAndUrl = () => {
-    const server_url = getDefaultServerURL();
-
-    if (isTestLink()) {
-        return { app_id: APP_IDS.LOCALHOST, server_url };
-    }
-
-    const current_domain = getCurrentProductionDomain() ?? '';
-    const app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? APP_IDS.PRODUCTION;
-
-    return { app_id, server_url };
+    return {
+        app_id: '107518',
+        server_url: 'ws.derivws.com',
+    };
 };
 
-export const getAppId = () => {
-    let app_id = null;
-    const config_app_id = window.localStorage.getItem('config.app_id');
-    const current_domain = getCurrentProductionDomain() ?? '';
-
-    if (config_app_id) {
-        app_id = config_app_id;
-    } else if (isStaging()) {
-        app_id = APP_IDS.STAGING;
-    } else if (isTestLink()) {
-        app_id = APP_IDS.LOCALHOST;
-    } else {
-        app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? APP_IDS.PRODUCTION;
-    }
-
-    return app_id;
+// ⭐ REPLACED FUNCTION 2
+export const getAppId = (): string => {
+    // Priority: Environment variable > localStorage > default
+    const env_app_id = process.env.APP_ID;
+    const stored_app_id = localStorage.getItem(LocalStorageConstants.configAppId);
+    
+    if (env_app_id) return env_app_id;
+    if (stored_app_id) return stored_app_id;
+    
+    // Fallback to your App ID
+    return '107518';
 };
 
-export const getSocketURL = () => {
-    const local_storage_server_url = window.localStorage.getItem('config.server_url');
-    if (local_storage_server_url) return local_storage_server_url;
-
-    const server_url = getDefaultServerURL();
-
-    return server_url;
+// ⭐ REPLACED FUNCTION 3
+export const getSocketURL = (): string => {
+    const stored_server = localStorage.getItem(LocalStorageConstants.configServerURL);
+    
+    if (stored_server) return stored_server;
+    
+    // Default to Deriv production WebSocket server
+    return 'ws.derivws.com';
 };
 
 export const checkAndSetEndpointFromUrl = () => {
