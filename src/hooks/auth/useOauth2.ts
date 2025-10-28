@@ -34,6 +34,14 @@ export const useOauth2 = ({
     const isSilentLoginExcluded =
         window.location.pathname.includes('callback') || window.location.pathname.includes('endpoint');
 
+    // Detect if we're in production/staging to enable OAuth2
+    // Also enable OAuth2 for localhost to use modern callback flow
+    const is_staging = window.location.hostname.includes('staging');
+    const is_localhost = window.location.hostname.includes('localhost');
+    const is_vercel_production = window.location.hostname === 'boty-phi.vercel.app';
+    const is_production = !is_staging && !is_localhost;
+    const isOAuth2Enabled = is_production || is_staging || is_localhost || is_vercel_production;
+
     const loggedState = Cookies.get('logged_state');
 
     useEffect(() => {
@@ -90,5 +98,5 @@ export const useOauth2 = ({
         }
     };
 
-    return { oAuthLogout: logoutHandler, retriggerOAuth2Login, isSingleLoggingIn };
+    return { oAuthLogout: logoutHandler, retriggerOAuth2Login, isSingleLoggingIn, isOAuth2Enabled };
 };
